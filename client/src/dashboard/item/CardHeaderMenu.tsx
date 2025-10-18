@@ -7,7 +7,7 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { Dispatch, MouseEvent, SetStateAction, useCallback } from "react";
+import { Dispatch, memo, MouseEvent, SetStateAction, useCallback } from "react";
 import LockOutlineIcon from "@mui/icons-material/LockOutline";
 import FolderZipIcon from "@mui/icons-material/FolderZip";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
@@ -26,7 +26,7 @@ interface CardHeaderMenuProps {
   open: boolean;
 }
 
-export default function CardHeaderMenu({
+function CardHeaderMenu({
   id,
   anchorEl,
   setAnchorEl,
@@ -36,24 +36,31 @@ export default function CardHeaderMenu({
   const mutateDelete = useMutation({
     mutationKey: ["deleteData"],
     mutationFn: deleteData,
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["applicant-list"] });
       setAnchorEl(null);
     },
   });
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = (event) => {
-    event.stopPropagation();
-    setAnchorEl(null);
-  };
+
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      setAnchorEl(event.currentTarget);
+    },
+    [setAnchorEl]
+  );
+
+  const handleClose = useCallback(
+    (event: MouseEvent<HTMLLIElement>) => {
+      event.stopPropagation();
+      setAnchorEl(null);
+    },
+    [setAnchorEl]
+  );
 
   const handleDelete = useCallback(
-    (event) => {
+    (event: MouseEvent<HTMLLIElement>) => {
       event.stopPropagation();
-      console.log("delete");
       mutateDelete.mutate(id);
     },
     [mutateDelete, id]
@@ -130,3 +137,8 @@ export default function CardHeaderMenu({
     </div>
   );
 }
+
+export default memo(
+  CardHeaderMenu,
+  (prevProps, nextProps) => prevProps.open === nextProps.open
+);

@@ -9,6 +9,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { memo } from "react";
+import EmptyList from "../item/EmptyList";
 
 function DashboardTable({
   title,
@@ -41,6 +42,8 @@ function DashboardTable({
             height: "calc( 100dvh - 100px )",
             overflowY: "auto",
             padding: "4px",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <SortableContext
@@ -48,10 +51,13 @@ function DashboardTable({
             items={applicantList?.map((item) => item.id) || []}
             strategy={verticalListSortingStrategy}
           >
-            {applicantList &&
+            {applicantList ? (
               applicantList.map((item) => (
                 <ApplicantCard key={item.id} itemData={item} />
-              ))}
+              ))
+            ) : (
+              <EmptyList />
+            )}
           </SortableContext>
         </CardContent>
       </Card>
@@ -59,4 +65,12 @@ function DashboardTable({
   );
 }
 
-export default memo(DashboardTable);
+export default memo(
+  DashboardTable,
+  (prevProps, nextProps) =>
+    (prevProps.applicantList?.length === nextProps.applicantList?.length &&
+      prevProps.applicantList?.every(
+        (item, i) => item === nextProps.applicantList?.at(i)
+      )) ??
+    false
+);

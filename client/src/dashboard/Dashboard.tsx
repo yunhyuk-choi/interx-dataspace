@@ -12,7 +12,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import ApplicantCard from "./item/ApplicantCard";
 import { DataType } from "./table/types/DashboardTableType";
 
@@ -52,40 +52,52 @@ export default function Dashboard() {
     })
   );
 
-  const handleDragStart = (event: DragStartEvent) => {
+  const handleDragStart = useCallback((event: DragStartEvent) => {
     const { active } = event;
     setActiveItem(Number(active.id));
-  };
+  }, []);
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over) {
-      setActiveItem(null);
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over) {
+        setActiveItem(null);
+        return;
+      }
+
+      if (active.id !== over.id && data) {
+        const sourceKey: DataType | undefined = Object.keys(data).find((key) =>
+          data[key as DataType].some((item) => item.id === active.id)
+        ) as DataType;
+        const targetKey = STEPS.includes(over.id as DataType)
+          ? (over.id as DataType)
+          : null;
+
+        if (!sourceKey || !targetKey) return;
+
+        const activeItemData = data[sourceKey].find(
+          (i) => i.id === Number(active.id)
+        );
+        activeItemData &&
+          mutateChangeStep.mutate({ ...activeItemData, step: targetKey });
+        return;
+      }
       return;
-    }
+    },
+    [setActiveItem, data, mutateChangeStep]
+  );
 
-    if (active.id !== over.id && data) {
-      const sourceKey: DataType | undefined = Object.keys(data).find((key) =>
-        data[key as DataType].some((item) => item.id === active.id)
-      ) as DataType;
-      const targetKey = STEPS.includes(over.id as DataType)
-        ? (over.id as DataType)
-        : null;
-
-      if (!sourceKey || !targetKey) return;
-
-      const activeItemData = data[sourceKey].find(
-        (i) => i.id === Number(active.id)
-      );
-      activeItemData &&
-        mutateChangeStep.mutate({ ...activeItemData, step: targetKey });
-      return;
-    }
-    return;
-  };
-  console.log(data);
   return (
-    <Grid container spacing={2}>
+    <Grid
+      container
+      spacing={2}
+      sx={{
+        WebkitUserSelect: "none",
+        userSelect: "none",
+        MozUserSelect: "none",
+        msUserSelect: "none",
+      }}
+    >
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
