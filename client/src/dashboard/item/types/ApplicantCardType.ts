@@ -1,6 +1,6 @@
 type WayType = "self" | "recommendation";
 
-type ApplicantDataType = {
+export type ApplicantDataType = {
   name: string;
   way: WayType;
   date: string;

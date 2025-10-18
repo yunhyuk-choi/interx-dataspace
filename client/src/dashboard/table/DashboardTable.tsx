@@ -7,6 +7,7 @@ import ApplicantCard from "../item/ApplicantCard";
 export default function DashboardTable({
   title,
   dataType,
+  applicantList,
 }: DashboardTableType) {
   return (
     <Grid size={"grow"}>
@@ -35,6 +36,8 @@ export default function DashboardTable({
             padding: "4px",
           }}
         >
+          {applicantList &&
+            applicantList.map((item) => <ApplicantCard itemData={item} />)}
           <ApplicantCard
             itemData={{
               name: "최윤혁",
@@ -43,52 +46,6 @@ export default function DashboardTable({
               isEvaluation: false,
             }}
           />
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
-          <Card>1</Card>
         </CardContent>
       </Card>
     </Grid>
