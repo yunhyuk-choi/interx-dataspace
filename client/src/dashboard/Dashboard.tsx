@@ -8,7 +8,6 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
-  MouseSensor,
   PointerSensor,
   useSensor,
   useSensors,
