@@ -8,10 +8,11 @@ import {
   styled,
   Typography,
 } from "@mui/material";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { ApplicantCardType } from "./types/ApplicantCardType";
 import { useDraggable } from "@dnd-kit/core";
+import CardHeaderMenu from "./CardHeaderMenu";
+import { useCallback, useState } from "react";
 
 const CardContentNoPadding = styled(CardContent)(`
   padding: 0;
@@ -23,8 +24,11 @@ const CardContentNoPadding = styled(CardContent)(`
 export default function ApplicantCard({
   itemData: { id, name, way, date, isEvaluation },
 }: ApplicantCardType) {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
+    disabled: open,
   });
   const style = transform
     ? {
@@ -33,24 +37,35 @@ export default function ApplicantCard({
       }
     : undefined;
 
+  const handleClick = useCallback(() => {
+    !open &&
+      window.open(
+        `https://interxlab.career.greetinghr.com/ko/interxlab`,
+        "_blank"
+      );
+  }, [open]);
+
   return (
-    <a
-      href="https://interxlab.career.greetinghr.com/ko/interxlab"
-      target="_blank"
-      style={{ textDecoration: "none" }}
+    <Card
+      sx={{ marginY: 1, cursor: "grab", ...style }}
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
     >
-      <Card
-        sx={{ marginY: 1, cursor: "grab", ...style }}
-        ref={setNodeRef}
-        {...listeners}
-        {...attributes}
-      >
+      <div onClick={handleClick}>
         <CardHeader
           title={name}
           slotProps={{
             title: { fontSize: 12, fontWeight: 500, textAlign: "left" },
           }}
-          action={<MoreHorizIcon />}
+          action={
+            <CardHeaderMenu
+              id={id}
+              anchorEl={anchorEl}
+              setAnchorEl={setAnchorEl}
+              open={open}
+            />
+          }
           sx={{ paddingX: 1.5, paddingY: 1 }}
         />
         <CardContentNoPadding
@@ -94,7 +109,7 @@ export default function ApplicantCard({
             {isEvaluation ? "평가완료" : "평가중"}
           </Typography>
         </CardContentNoPadding>
-      </Card>
-    </a>
+      </div>
+    </Card>
   );
 }

@@ -65,12 +65,13 @@ app.put("/api/data", (req, res) => {
 });
 
 app.delete("/api/data", (req, res) => {
-  const deleteItemId = req.body;
+  console.log("delete", req.body.id);
+  const deleteItemId = Number(req.body.id);
   const data = readData();
   const newData = data.filter((item) => item.id !== deleteItemId);
   writeData(newData);
 
-  res.status(201).json({ message: "지원자 정보가 삭제되었습니다.", newData });
+  res.status(200).json({ message: "지원자 정보가 삭제되었습니다.", newData });
 });
 
 app.listen(PORT, () => {

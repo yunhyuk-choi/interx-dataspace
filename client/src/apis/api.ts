@@ -25,3 +25,10 @@ export const changeStep = async (
   const { data } = await apiClient.put("/data", item);
   return data.data;
 };
+
+export const deleteData = async (id: number): Promise<ApplicantDataType[]> => {
+  console.log("api.delete");
+  const { data } = await apiClient.delete("/data", { data: { id } });
+  console.log("api.delete out");
+  return data.data;
+};
