@@ -3,7 +3,7 @@
     "id": 1,
     "name": "최윤혁",
     "way": "self",
-    "step": "coding-test",
+    "step": "support",
     "date": "2025.10.18",
     "isEvaluation": false
   },
@@ -11,7 +11,7 @@
     "id": 2,
     "name": "최윤혁2",
     "way": "recommendation",
-    "step": "coding-test",
+    "step": "screen-call",
     "date": "2025.10.18",
     "isEvaluation": false
   },
@@ -19,7 +19,7 @@
     "id": 3,
     "name": "최윤혁3",
     "way": "self",
-    "step": "coding-test",
+    "step": "first-interview",
     "date": "2025.10.18",
     "isEvaluation": false
   },
@@ -27,7 +27,7 @@
     "id": 4,
     "name": "최윤혁4",
     "way": "recommendation",
-    "step": "coding-test",
+    "step": "salary-negotiation",
     "date": "2025.10.18",
     "isEvaluation": false
   },
@@ -43,7 +43,7 @@
     "id": 6,
     "name": "최윤혁6",
     "way": "recommendation",
-    "step": "coding-test",
+    "step": "passed",
     "date": "2025.10.18",
     "isEvaluation": false
   },
@@ -75,7 +75,7 @@
     "id": 10,
     "name": "최윤혁10",
     "way": "recommendation",
-    "step": "coding-test",
+    "step": "second-interview",
     "date": "2025.10.18",
     "isEvaluation": false
   },
