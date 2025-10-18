@@ -8,6 +8,7 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  MouseSensor,
   PointerSensor,
   useSensor,
   useSensors,
@@ -43,7 +44,14 @@ export default function Dashboard() {
 
   const [activeItem, setActiveItem] = useState<number | null>(null);
 
-  const sensors = useSensors(useSensor(PointerSensor));
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 80,
+        tolerance: 20,
+      },
+    })
+  );
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
