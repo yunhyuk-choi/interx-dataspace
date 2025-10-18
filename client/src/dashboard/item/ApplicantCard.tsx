@@ -1,3 +1,4 @@
+import { memo, useCallback, useState } from "react";
 import {
   Card,
   CardContent,
@@ -9,10 +10,9 @@ import {
   Typography,
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import { ApplicantCardType } from "./types/ApplicantCardType";
 import { useDraggable } from "@dnd-kit/core";
+import { ApplicantCardType } from "./types/ApplicantCardType";
 import CardHeaderMenu from "./CardHeaderMenu";
-import { useCallback, useState } from "react";
 
 const CardContentNoPadding = styled(CardContent)(`
   padding: 0;
@@ -21,7 +21,7 @@ const CardContentNoPadding = styled(CardContent)(`
   }
 `);
 
-export default function ApplicantCard({
+function ApplicantCard({
   itemData: { id, name, way, date, isEvaluation },
 }: ApplicantCardType) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -47,7 +47,7 @@ export default function ApplicantCard({
 
   return (
     <Card
-      sx={{ marginY: 1, cursor: "grab", ...style }}
+      sx={{ marginY: 1, cursor: "grab", minHeight: 124, ...style }}
       ref={setNodeRef}
       {...listeners}
       {...attributes}
@@ -113,3 +113,5 @@ export default function ApplicantCard({
     </Card>
   );
 }
+
+export default memo(ApplicantCard);
