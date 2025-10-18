@@ -2,6 +2,7 @@
   {
     "id": 1,
     "name": "최윤혁",
+    "way": "self",
     "step": "coding-test",
     "date": "2025.10.18",
     "isEvaluation": false
@@ -9,6 +10,7 @@
   {
     "id": 2,
     "name": "최윤혁2",
+    "way": "recommendation",
     "step": "coding-test",
     "date": "2025.10.18",
     "isEvaluation": false
