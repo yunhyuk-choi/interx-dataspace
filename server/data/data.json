@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "name": "최윤혁",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 2,
+    "name": "최윤혁2",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  }
+]
