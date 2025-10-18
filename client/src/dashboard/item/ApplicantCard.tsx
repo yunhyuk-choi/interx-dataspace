@@ -11,6 +11,7 @@ import {
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { ApplicantCardType } from "./types/ApplicantCardType";
+import { useDraggable } from "@dnd-kit/core";
 
 const CardContentNoPadding = styled(CardContent)(`
   padding: 0;
@@ -20,10 +21,25 @@ const CardContentNoPadding = styled(CardContent)(`
 `);
 
 export default function ApplicantCard({
-  itemData: { name, way, date, isEvaluation },
+  itemData: { id, name, way, date, isEvaluation },
 }: ApplicantCardType) {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id,
+  });
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        opacity: 0,
+      }
+    : undefined;
+
   return (
-    <Card sx={{ marginY: 1 }}>
+    <Card
+      sx={{ marginY: 1, cursor: "grab", ...style }}
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+    >
       <CardHeader
         title={name}
         slotProps={{

@@ -3,14 +3,21 @@ import { grey } from "@mui/material/colors";
 import { DashboardTableType } from "./types/DashboardTableType";
 import DashboardTableActions from "./DashboardTableActions";
 import ApplicantCard from "../item/ApplicantCard";
+import { useDroppable } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { memo } from "react";
 
-export default function DashboardTable({
+function DashboardTable({
   title,
   dataType,
   applicantList,
 }: DashboardTableType) {
+  const { setNodeRef } = useDroppable({ id: dataType });
   return (
-    <Grid size={"grow"}>
+    <Grid size={"grow"} ref={setNodeRef}>
       <Card
         sx={{ height: "100dvh", backgroundColor: grey[300], padding: "4px" }}
       >
@@ -36,18 +43,20 @@ export default function DashboardTable({
             padding: "4px",
           }}
         >
-          {applicantList &&
-            applicantList.map((item) => <ApplicantCard itemData={item} />)}
-          <ApplicantCard
-            itemData={{
-              name: "최윤혁",
-              way: "recommendation",
-              date: "2025.10.17",
-              isEvaluation: false,
-            }}
-          />
+          <SortableContext
+            id={dataType}
+            items={applicantList?.map((item) => item.id) || []}
+            strategy={verticalListSortingStrategy}
+          >
+            {applicantList &&
+              applicantList.map((item) => (
+                <ApplicantCard key={item.id} itemData={item} />
+              ))}
+          </SortableContext>
         </CardContent>
       </Card>
     </Grid>
   );
 }
+
+export default memo(DashboardTable);
