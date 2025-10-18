@@ -18,16 +18,26 @@ function DashboardTable({
 }: DashboardTableType) {
   const { setNodeRef } = useDroppable({ id: dataType });
   return (
-    <Grid size={"grow"} ref={setNodeRef}>
+    <Grid
+      size={"grow"}
+      ref={setNodeRef}
+      sx={{ minWidth: 200, marginX: "auto" }}
+    >
       <Card
-        sx={{ height: "100dvh", backgroundColor: grey[300], padding: "4px" }}
+        sx={{
+          height: "calc( 100dvh - 172px )",
+          backgroundColor: grey[300],
+          paddingY: "4px",
+          paddingX: 0,
+          marginBottom: 1,
+        }}
       >
         <CardHeader
           sx={{
             position: "sticky",
             top: 0,
             zIndex: 1,
-            paddingX: "4px",
+            paddingX: "16px",
             paddingY: "8px",
           }}
           title={title}
@@ -39,7 +49,7 @@ function DashboardTable({
         <Divider />
         <CardContent
           sx={{
-            height: "calc( 100dvh - 100px )",
+            height: "calc( 100% - 60px )",
             overflowY: "auto",
             padding: "4px",
             display: "flex",

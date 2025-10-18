@@ -96,6 +96,9 @@ export default function Dashboard() {
         userSelect: "none",
         MozUserSelect: "none",
         msUserSelect: "none",
+        maxWidth: "1600px",
+        overflowX: "auto",
+        marginX: "auto",
       }}
     >
       <DndContext

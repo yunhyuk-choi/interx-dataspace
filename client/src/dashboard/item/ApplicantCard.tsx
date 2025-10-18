@@ -47,7 +47,7 @@ function ApplicantCard({
 
   return (
     <Card
-      sx={{ marginY: 1, cursor: "grab", ...style }}
+      sx={{ marginY: 1, cursor: "grab", minHeight: 124, ...style }}
       ref={setNodeRef}
       {...listeners}
       {...attributes}
