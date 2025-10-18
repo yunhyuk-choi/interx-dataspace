@@ -99,32 +99,32 @@ export default function Dashboard() {
           applicantList={data?.support}
         />
         <DashboardTable
-          title="✏️ TA 스크린 콜"
+          title="📞 TA 스크린 콜"
           dataType="screen-call"
           applicantList={data?.["screen-call"]}
         />
         <DashboardTable
-          title="✏️ 1차 인터뷰 (실무)"
+          title="🥇 1차 인터뷰 (실무)"
           dataType="first-interview"
           applicantList={data?.["first-interview"]}
         />
         <DashboardTable
-          title="✏️ 코딩테스트"
+          title="💻 코딩테스트"
           dataType="coding-test"
           applicantList={data?.["coding-test"]}
         />
         <DashboardTable
-          title="✏️ 2차 인터뷰 (임원)"
+          title="🥈 2차 인터뷰 (임원)"
           dataType="second-interview"
           applicantList={data?.["second-interview"]}
         />
         <DashboardTable
-          title="✏️ 처우 협의"
+          title="🥉 처우 협의"
           dataType="salary-negotiation"
           applicantList={data?.["salary-negotiation"]}
         />
         <DashboardTable
-          title="✏️ 입사 확정"
+          title="🏆 입사 확정"
           dataType="passed"
           applicantList={data?.passed}
         />
