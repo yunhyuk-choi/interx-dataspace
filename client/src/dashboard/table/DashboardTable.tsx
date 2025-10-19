@@ -1,4 +1,12 @@
-import { Card, CardContent, CardHeader, Divider, Grid } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { DashboardTableType } from "./types/DashboardTableType";
 import DashboardTableActions from "./DashboardTableActions";
@@ -8,7 +16,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import EmptyList from "../item/EmptyList";
 
 function DashboardTable({
@@ -17,12 +25,17 @@ function DashboardTable({
   applicantList,
 }: DashboardTableType) {
   const { setNodeRef } = useDroppable({ id: dataType });
+
+  const items = useMemo(
+    () =>
+      applicantList?.map((item) => (
+        <ApplicantCard key={item.id} itemData={item} />
+      )) ?? <EmptyList />,
+    [applicantList]
+  );
+
   return (
-    <Grid
-      size={"grow"}
-      ref={setNodeRef}
-      sx={{ minWidth: 200, marginX: "auto" }}
-    >
+    <Grid size={"grow"} ref={setNodeRef} sx={{ marginX: "auto" }}>
       <Card
         sx={{
           height: "calc( 100dvh - 172px )",
@@ -32,25 +45,54 @@ function DashboardTable({
           marginBottom: 1,
         }}
       >
-        <CardHeader
+        <Box
           sx={{
             position: "sticky",
             top: 0,
             zIndex: 1,
-            paddingX: "16px",
-            paddingY: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            px: 1,
+            py: 1,
+            gap: 1,
+            backgroundColor: grey[300],
           }}
-          title={title}
-          slotProps={{
-            title: { fontSize: 12, fontWeight: 500, textAlign: "left" },
-          }}
-          action={<DashboardTableActions />}
-        />
+        >
+          <Typography
+            variant="subtitle2"
+            sx={{
+              fontSize: 12,
+              fontWeight: 500,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              textAlign: "left",
+              px: 1,
+              flex: 1,
+              minWidth: 0,
+            }}
+            title={title}
+          >
+            {title}
+          </Typography>
+          <Box
+            sx={{
+              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "right",
+            }}
+          >
+            <DashboardTableActions />
+          </Box>
+        </Box>
         <Divider />
         <CardContent
           sx={{
             height: "calc( 100% - 60px )",
             overflowY: "auto",
+            overflowX: "hidden",
             padding: "4px",
             display: "flex",
             flexDirection: "column",
@@ -61,13 +103,7 @@ function DashboardTable({
             items={applicantList?.map((item) => item.id) || []}
             strategy={verticalListSortingStrategy}
           >
-            {applicantList ? (
-              applicantList.map((item) => (
-                <ApplicantCard key={item.id} itemData={item} />
-              ))
-            ) : (
-              <EmptyList />
-            )}
+            {items}
           </SortableContext>
         </CardContent>
       </Card>

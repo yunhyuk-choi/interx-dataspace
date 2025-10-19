@@ -1,47 +1,30 @@
 import { Grid } from "@mui/material";
 import DashboardTable from "./table/DashboardTable";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { changeStep, getApplicantData } from "../apis/api";
 import {
   closestCenter,
   DndContext,
-  DragEndEvent,
   DragOverlay,
-  DragStartEvent,
   PointerSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useCallback, useState } from "react";
 import ApplicantCard from "./item/ApplicantCard";
+import useDashboard from "./hook/useDashboard";
 import { DataType } from "./table/types/DashboardTableType";
+import { useMemo } from "react";
 
-export const STEPS: DataType[] = [
-  "support",
-  "screen-call",
-  "first-interview",
-  "coding-test",
-  "second-interview",
-  "salary-negotiation",
-  "passed",
+const STEPSWITHTITLE: { id: DataType; title: string }[] = [
+  { id: "support", title: "✏️ 지원(서류 전형)" },
+  { id: "screen-call", title: "📞 TA 스크린 콜" },
+  { id: "first-interview", title: "🥇 1차 인터뷰 (실무)" },
+  { id: "coding-test", title: "💻 코딩테스트" },
+  { id: "second-interview", title: "🥈 2차 인터뷰 (임원)" },
+  { id: "salary-negotiation", title: "🥉 처우 협의" },
+  { id: "passed", title: "🏆 입사 확정" },
 ];
 
 export default function Dashboard() {
-  const { data, refetch } = useQuery({
-    queryKey: ["applicant-list"],
-    queryFn: getApplicantData,
-  });
-
-  const mutateChangeStep = useMutation({
-    mutationFn: changeStep,
-    mutationKey: ["changeStep"],
-    onSuccess: () => {
-      setActiveItem(null);
-      refetch();
-    },
-  });
-
-  const [activeItem, setActiveItem] = useState<number | null>(null);
+  const { data, activeItem, handleDragEnd, handleDragStart } = useDashboard();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -52,39 +35,22 @@ export default function Dashboard() {
     })
   );
 
-  const handleDragStart = useCallback((event: DragStartEvent) => {
-    const { active } = event;
-    setActiveItem(Number(active.id));
-  }, []);
+  const steps = useMemo(
+    () =>
+      STEPSWITHTITLE.map((step) => (
+        <DashboardTable
+          key={step.id}
+          title={step.title}
+          dataType={step.id}
+          applicantList={data?.[step.id]}
+        />
+      )),
+    [data]
+  );
 
-  const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      const { active, over } = event;
-      if (!over) {
-        setActiveItem(null);
-        return;
-      }
-
-      if (active.id !== over.id && data) {
-        const sourceKey: DataType | undefined = Object.keys(data).find((key) =>
-          data[key as DataType].some((item) => item.id === active.id)
-        ) as DataType;
-        const targetKey = STEPS.includes(over.id as DataType)
-          ? (over.id as DataType)
-          : null;
-
-        if (!sourceKey || !targetKey) return;
-
-        const activeItemData = data[sourceKey].find(
-          (i) => i.id === Number(active.id)
-        );
-        activeItemData &&
-          mutateChangeStep.mutate({ ...activeItemData, step: targetKey });
-        return;
-      }
-      return;
-    },
-    [setActiveItem, data, mutateChangeStep]
+  const flatApplicants = useMemo(
+    () => (data ? Object.values(data).flat() : []),
+    [data]
   );
 
   return (
@@ -97,6 +63,7 @@ export default function Dashboard() {
         MozUserSelect: "none",
         msUserSelect: "none",
         maxWidth: "1600px",
+        minWidth: "1200px",
         overflowX: "auto",
         marginX: "auto",
       }}
@@ -107,49 +74,11 @@ export default function Dashboard() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <DashboardTable
-          title="✏️ 지원(서류 전형)"
-          dataType="support"
-          applicantList={data?.support}
-        />
-        <DashboardTable
-          title="📞 TA 스크린 콜"
-          dataType="screen-call"
-          applicantList={data?.["screen-call"]}
-        />
-        <DashboardTable
-          title="🥇 1차 인터뷰 (실무)"
-          dataType="first-interview"
-          applicantList={data?.["first-interview"]}
-        />
-        <DashboardTable
-          title="💻 코딩테스트"
-          dataType="coding-test"
-          applicantList={data?.["coding-test"]}
-        />
-        <DashboardTable
-          title="🥈 2차 인터뷰 (임원)"
-          dataType="second-interview"
-          applicantList={data?.["second-interview"]}
-        />
-        <DashboardTable
-          title="🥉 처우 협의"
-          dataType="salary-negotiation"
-          applicantList={data?.["salary-negotiation"]}
-        />
-        <DashboardTable
-          title="🏆 입사 확정"
-          dataType="passed"
-          applicantList={data?.passed}
-        />
+        {steps}
         <DragOverlay dropAnimation={null}>
           {activeItem && data ? (
             <ApplicantCard
-              itemData={
-                Object.values(data)
-                  .flat()
-                  .find((i) => i.id === activeItem)!
-              }
+              itemData={flatApplicants.find((i) => i.id === activeItem)!}
             />
           ) : null}
         </DragOverlay>
