@@ -58,14 +58,13 @@ app.put("/api/data", (req, res) => {
     if (item.id === newItemId) return req.body;
     return item;
   });
-  console.log(newItemId, req.body);
+
   writeData(newData);
 
   res.status(201).json({ message: "지원자 정보가 수정되었습니다.", newData });
 });
 
 app.delete("/api/data", (req, res) => {
-  console.log("delete", req.body.id);
   const deleteItemId = Number(req.body.id);
   const data = readData();
   const newData = data.filter((item) => item.id !== deleteItemId);

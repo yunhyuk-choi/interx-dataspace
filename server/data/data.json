@@ -3,13 +3,173 @@
     "id": 1,
     "name": "최윤혁",
     "way": "self",
-    "step": "coding-test",
+    "step": "support",
     "date": "2025.10.18",
     "isEvaluation": false
   },
   {
     "id": 2,
     "name": "최윤혁2",
+    "way": "recommendation",
+    "step": "screen-call",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 3,
+    "name": "최윤혁3",
+    "way": "self",
+    "step": "first-interview",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 4,
+    "name": "최윤혁4",
+    "way": "recommendation",
+    "step": "salary-negotiation",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 5,
+    "name": "최윤혁5",
+    "way": "self",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 6,
+    "name": "최윤혁6",
+    "way": "recommendation",
+    "step": "passed",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 7,
+    "name": "최윤혁7",
+    "way": "self",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 8,
+    "name": "최윤혁8",
+    "way": "recommendation",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 9,
+    "name": "최윤혁9",
+    "way": "self",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 10,
+    "name": "최윤혁10",
+    "way": "recommendation",
+    "step": "second-interview",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 11,
+    "name": "최윤혁11",
+    "way": "self",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 12,
+    "name": "최윤혁12",
+    "way": "recommendation",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 13,
+    "name": "최윤혁13",
+    "way": "self",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 14,
+    "name": "최윤혁14",
+    "way": "recommendation",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 15,
+    "name": "최윤혁5",
+    "way": "self",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 16,
+    "name": "최윤혁16",
+    "way": "recommendation",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 17,
+    "name": "최윤혁17",
+    "way": "self",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 18,
+    "name": "최윤혁18",
+    "way": "recommendation",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 19,
+    "name": "최윤혁19",
+    "way": "self",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 20,
+    "name": "최윤혁20",
+    "way": "recommendation",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 21,
+    "name": "최윤혁21",
+    "way": "self",
+    "step": "coding-test",
+    "date": "2025.10.18",
+    "isEvaluation": false
+  },
+  {
+    "id": 22,
+    "name": "최윤혁22",
     "way": "recommendation",
     "step": "coding-test",
     "date": "2025.10.18",

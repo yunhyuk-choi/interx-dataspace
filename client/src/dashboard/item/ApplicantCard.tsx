@@ -1,3 +1,4 @@
+import { memo, useCallback, useMemo, useState } from "react";
 import {
   Card,
   CardContent,
@@ -9,10 +10,9 @@ import {
   Typography,
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import { ApplicantCardType } from "./types/ApplicantCardType";
 import { useDraggable } from "@dnd-kit/core";
+import { ApplicantCardType } from "./types/ApplicantCardType";
 import CardHeaderMenu from "./CardHeaderMenu";
-import { useCallback, useState } from "react";
 
 const CardContentNoPadding = styled(CardContent)(`
   padding: 0;
@@ -21,21 +21,27 @@ const CardContentNoPadding = styled(CardContent)(`
   }
 `);
 
-export default function ApplicantCard({
+function ApplicantCard({
   itemData: { id, name, way, date, isEvaluation },
 }: ApplicantCardType) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
     disabled: open,
   });
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-        opacity: 0,
-      }
-    : undefined;
+
+  const style = useMemo(
+    () =>
+      transform
+        ? {
+            transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+            opacity: 0,
+          }
+        : undefined,
+    [transform]
+  );
 
   const handleClick = useCallback(() => {
     !open &&
@@ -45,9 +51,40 @@ export default function ApplicantCard({
       );
   }, [open]);
 
+  const chipStyle = useMemo(
+    () =>
+      way === "recommendation"
+        ? {
+            color: "error" as const,
+            label: "추천등록",
+            sx: {
+              borderRadius: "5px",
+              height: "14px",
+              fontSize: "10px",
+              color: "white",
+              paddingTop: 0,
+            },
+          }
+        : {
+            color: "info" as const,
+            label: "직접등록",
+            sx: {
+              borderRadius: "5px",
+              height: "14px",
+              fontSize: "10px",
+              color: "InfoText",
+              paddingTop: 0,
+            },
+          },
+    [way]
+  );
+
+  const statusText = isEvaluation ? "평가완료" : "평가중";
+  const statusColor = isEvaluation ? "success" : "warning";
+
   return (
     <Card
-      sx={{ marginY: 1, cursor: "grab", ...style }}
+      sx={{ marginY: 1, cursor: "grab", minHeight: 124, ...style }}
       ref={setNodeRef}
       {...listeners}
       {...attributes}
@@ -68,22 +105,9 @@ export default function ApplicantCard({
           }
           sx={{ paddingX: 1.5, paddingY: 1 }}
         />
-        <CardContentNoPadding
-          sx={{ textAlign: "left", paddingX: 1.5, paddingBottom: 1 }}
-        >
-          <Chip
-            color={way === "recommendation" ? "error" : "info"}
-            label={way === "recommendation" ? "추천등록" : "직접등록"}
-            variant="filled"
-            sx={{
-              borderRadius: "5px",
-              height: "14px",
-              fontSize: "10px",
-              color: way === "recommendation" ? "white" : "InfoText",
-              paddingTop: 0,
-            }}
-          />
-          <Stack direction={"row"} sx={{ marginY: "8px" }}>
+        <CardContentNoPadding sx={{ textAlign: "left", px: 1.5, pb: 1 }}>
+          <Chip {...chipStyle} />
+          <Stack direction={"row"} sx={{ my: "8px" }}>
             <AccessTimeIcon
               sx={{
                 fontSize: "10px",
@@ -100,16 +124,14 @@ export default function ApplicantCard({
               {date}
             </Typography>
           </Stack>
-          <Divider sx={{ marginY: 1 }} />
-          <Typography
-            fontSize={"12px"}
-            lineHeight={"12px"}
-            color={isEvaluation ? "success" : "warning"}
-          >
-            {isEvaluation ? "평가완료" : "평가중"}
+          <Divider sx={{ my: 1 }} />
+          <Typography fontSize={"12px"} lineHeight={"12px"} color={statusColor}>
+            {statusText}
           </Typography>
         </CardContentNoPadding>
       </div>
     </Card>
   );
 }
+
+export default memo(ApplicantCard);

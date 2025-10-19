@@ -13,8 +13,8 @@ import SwapVertSharpIcon from "@mui/icons-material/SwapVertSharp";
 
 export default function SearchBar() {
   return (
-    <Stack direction={"row"}>
-      <FormControl size="small">
+    <Stack direction={"row"} spacing={2} sx={{ marginY: 1 }}>
+      <FormControl size="small" sx={{ minWidth: 120 }}>
         <InputLabel id={"search-selector-label"}>검색 유형</InputLabel>
         <Select labelId="search-selector-label" size="small">
           <MenuItem>평가 대상</MenuItem>
@@ -22,7 +22,11 @@ export default function SearchBar() {
         </Select>
       </FormControl>
       <OutlinedInput startAdornment={<SearchIcon />} size="small" />
-      <Stack direction={"row"} sx={{ marginY: 1 }}>
+      <Stack
+        direction={"row"}
+        sx={{ marginY: 1, alignItems: "center" }}
+        spacing={1}
+      >
         <AddIcon />
         <FilterListIcon />
         <SwapVertSharpIcon />

@@ -3,11 +3,18 @@ import {
   Divider,
   IconButton,
   ListItemIcon,
-  ListItemText,
   Menu,
   MenuItem,
 } from "@mui/material";
-import { Dispatch, MouseEvent, SetStateAction, useCallback } from "react";
+import {
+  Dispatch,
+  memo,
+  MouseEvent,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useMemo,
+} from "react";
 import LockOutlineIcon from "@mui/icons-material/LockOutline";
 import FolderZipIcon from "@mui/icons-material/FolderZip";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
@@ -26,37 +33,82 @@ interface CardHeaderMenuProps {
   open: boolean;
 }
 
-export default function CardHeaderMenu({
+type DividerItem = { type: "divider" };
+
+type MenuActionItem = {
+  type?: "item";
+  icon: ReactNode;
+  label: string;
+  onClick?: (event: MouseEvent<HTMLLIElement>) => void;
+  sx?: object;
+};
+
+type MenuItemType = DividerItem | MenuActionItem;
+
+const isDivider = (item: MenuItemType): item is DividerItem =>
+  item.type === "divider";
+
+function CardHeaderMenu({
   id,
   anchorEl,
   setAnchorEl,
   open,
 }: CardHeaderMenuProps) {
   const queryClient = useQueryClient();
+
   const mutateDelete = useMutation({
     mutationKey: ["deleteData"],
     mutationFn: deleteData,
-    onSuccess: (response) => {
+    onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["applicant-list"] });
       setAnchorEl(null);
     },
   });
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = (event) => {
-    event.stopPropagation();
-    setAnchorEl(null);
-  };
+
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      setAnchorEl(event.currentTarget);
+    },
+    [setAnchorEl]
+  );
+
+  const handleClose = useCallback(
+    (event: MouseEvent<HTMLLIElement>) => {
+      event.stopPropagation();
+      setAnchorEl(null);
+    },
+    [setAnchorEl]
+  );
 
   const handleDelete = useCallback(
-    (event) => {
+    (event: MouseEvent<HTMLLIElement>) => {
       event.stopPropagation();
-      console.log("delete");
       mutateDelete.mutate(id);
     },
     [mutateDelete, id]
+  );
+
+  const menuItems: MenuItemType[] = useMemo(
+    () => [
+      { icon: <LockOutlineIcon />, label: "지원자 비공개" },
+      { type: "divider" },
+      { icon: <FolderZipIcon />, label: "모든 지원 서류 다운로드" },
+      { icon: <PictureAsPdfIcon />, label: "지원자 정보 다운로드" },
+      { icon: <EmailIcon />, label: "메일 쓰기" },
+      { icon: <PhoneAndroidIcon />, label: "문자 보내기" },
+      { icon: <HowToRegIcon />, label: "평가 배정" },
+      { type: "divider" },
+      { icon: <SportsScoreIcon />, label: "최종 합격" },
+      { type: "divider" },
+      {
+        icon: <DoDisturbAltIcon />,
+        label: "불합격 처리",
+        onClick: handleDelete,
+        sx: { color: "red" },
+      },
+    ],
+    [handleDelete]
   );
 
   return (
@@ -75,58 +127,29 @@ export default function CardHeaderMenu({
           },
         }}
       >
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <LockOutlineIcon />
-          </ListItemIcon>
-          <ListItemText>지원자 비공개</ListItemText>
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <FolderZipIcon />
-          </ListItemIcon>
-          <ListItemText>모든 지원 서류 다운로드</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <PictureAsPdfIcon />
-          </ListItemIcon>
-          <ListItemText>지원자 정보 다운로드</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <EmailIcon />
-          </ListItemIcon>
-          <ListItemText>메일 쓰기</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <PhoneAndroidIcon />
-          </ListItemIcon>
-          <ListItemText>문자 보내기</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <HowToRegIcon />
-          </ListItemIcon>
-          <ListItemText>평가 배정</ListItemText>
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <SportsScoreIcon />
-          </ListItemIcon>
-          <ListItemText>최종 합격</ListItemText>
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={handleDelete} sx={{ color: "red" }}>
-          <ListItemIcon>
-            <DoDisturbAltIcon />
-          </ListItemIcon>
-          <ListItemText>불합격 처리</ListItemText>
-        </MenuItem>
+        {menuItems.map((item, index) =>
+          isDivider(item) ? (
+            <Divider key={`divider-${index}`} />
+          ) : (
+            <MenuItem
+              key={item.label}
+              onClick={item.onClick ?? handleClose}
+              sx={item.sx}
+            >
+              <ListItemIcon sx={item.sx}>{item.icon}</ListItemIcon>
+              <ListItemIcon sx={item.sx}>{item.label}</ListItemIcon>
+            </MenuItem>
+          )
+        )}
       </Menu>
     </div>
   );
 }
+
+export default memo(
+  CardHeaderMenu,
+  (prevProps, nextProps) =>
+    prevProps.open === nextProps.open &&
+    prevProps.anchorEl === nextProps.anchorEl &&
+    prevProps.id === nextProps.id
+);
