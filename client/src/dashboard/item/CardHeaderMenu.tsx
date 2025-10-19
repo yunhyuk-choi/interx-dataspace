@@ -3,7 +3,6 @@ import {
   Divider,
   IconButton,
   ListItemIcon,
-  ListItemText,
   Menu,
   MenuItem,
 } from "@mui/material";

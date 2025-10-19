@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { changeStep, getApplicantData } from "../../apis/api";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { DataType } from "../table/types/DashboardTableType";
 
