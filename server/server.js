@@ -1,5 +1,5 @@
 import express from "express";
-import fs, { read } from "fs";
+import fs from "fs";
 import path from "path";
 import cors from "cors";
 
@@ -32,7 +32,39 @@ const writeData = (data) => {
 app.get("/api/data", (req, res) => {
   const data = readData();
 
-  res.json(Object.groupBy(data, ({ step }) => step));
+  const {
+    searchText,
+    searchOption,
+    sortOption = "id",
+    sortOrientation = "asc",
+  } = req.query;
+
+  const searchedData =
+    searchText && searchOption
+      ? !(searchOption === "way" && searchText === "all")
+        ? data.filter((item) => {
+            const value = String(item[searchOption] ?? "").toLowerCase();
+            return value.includes(String(searchText).toLowerCase());
+          })
+        : data
+      : data;
+
+  res.json(
+    Object.groupBy(
+      searchedData.sort((a, b) => {
+        if (sortOption === "id") {
+          return sortOrientation === "desc"
+            ? b[sortOption] - a[sortOption]
+            : a[sortOption] - b[sortOption];
+        } else {
+          return sortOrientation === "desc"
+            ? b[sortOption].localeCompare(a[sortOption])
+            : a[sortOption].localeCompare(b[sortOption]);
+        }
+      }),
+      ({ step }) => step
+    )
+  );
 });
 
 app.post("/api/data", (req, res) => {
@@ -74,5 +106,5 @@ app.delete("/api/data", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

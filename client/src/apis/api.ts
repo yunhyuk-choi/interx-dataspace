@@ -14,13 +14,29 @@ import { apiClient } from "./apiClient";
  * }
  * ```
  */
-type ApplicantListResponseType = {
+export type ApplicantListResponseType = {
   [key in DataType]: ApplicantDataType[];
+};
+
+/**
+ * 검색 및 정렬 조건
+ *
+ * @param {string} searchText = 검색할 문자열
+ * @param {string} searchOption = 검색 조건(검색할 field)
+ * @param {string} sortOption = 정렬 조건(정렬 기준 field)
+ * @param {string} sortOrientation = 정렬 방향(asc,desc)
+ */
+type SearchParams = {
+  searchText: string;
+  searchOption: string;
+  sortOption: string;
+  sortOrientation: string;
 };
 
 /**
  * 모든 지원자 데이터를 서버로부터 가져옵니다.
  *
+ * @param {SearchParams} searchParams = 검색 및 정렬 조건
  * @returns {Promise<ApplicantListResponseType>}
  * 각 채용 단계별(`DataType`)로 분류된 지원자 리스트를 반환합니다.
  *
@@ -30,16 +46,19 @@ type ApplicantListResponseType = {
  * console.log(data["coding-test"]); // 코딩 테스트 단계 지원자 목록
  * ```
  */
-export const getApplicantData =
-  async (): Promise<ApplicantListResponseType> => {
-    const { data } = await apiClient.get<ApplicantListResponseType>("/data");
-    return data;
-  };
+export const getApplicantData = async (
+  searchParams?: Partial<SearchParams>
+): Promise<ApplicantListResponseType> => {
+  const { data } = await apiClient.get<ApplicantListResponseType>("/data", {
+    params: searchParams,
+  });
+  return data;
+};
 
 /**
  * 새로운 지원자 데이터를 추가합니다.
  *
- * @param {ApplicantDataType} item - 추가할 지원자 정보 객체
+ * @param {Omit<ApplicantDataType, "id">} item - 추가할 지원자 정보 객체 (id는 자동 추가되므로 제외)
  * @returns {Promise<ApplicantDataType[]>}
  * 추가 후 최신 지원자 데이터 배열을 반환합니다.
  *
@@ -49,7 +68,7 @@ export const getApplicantData =
  * ```
  */
 export const addData = async (
-  item: ApplicantDataType
+  item: Omit<ApplicantDataType, "id">
 ): Promise<ApplicantDataType[]> => {
   const { data } = await apiClient.post("/data", item);
   return data.data;
@@ -67,7 +86,7 @@ export const addData = async (
  * await changeStep({ ...applicant, step: "second-interview" });
  * ```
  */
-export const changeStep = async (
+export const changeData = async (
   item: ApplicantDataType
 ): Promise<ApplicantDataType[]> => {
   const { data } = await apiClient.put("/data", item);

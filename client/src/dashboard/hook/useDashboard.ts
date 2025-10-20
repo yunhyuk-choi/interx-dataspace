@@ -1,8 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { changeStep, getApplicantData } from "../../apis/api";
-import { useCallback, useState } from "react";
+import { changeData, getApplicantData } from "../../apis/api";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { DataType } from "../table/types/DashboardTableType";
+import { debounce } from "lodash";
+import { useDashboardStore } from "../store/dashboardStore";
+import { SelectChangeEvent } from "@mui/material";
 
 export const STEPS: DataType[] = [
   "support",
@@ -15,13 +18,55 @@ export const STEPS: DataType[] = [
 ];
 
 export default function useDashboard() {
+  const {
+    searchInput,
+    searchOption,
+    activeItem,
+    sortOption,
+    sortOrientation,
+    setSearchInput,
+    setSearchOption,
+    setSortOption,
+    toggleSortOrientation,
+    setActiveItem,
+  } = useDashboardStore();
+
+  const [debouncedSearchText, setDebouncedSearchText] = useState<
+    string | undefined
+  >(searchInput);
+
   const { data, refetch } = useQuery({
-    queryKey: ["applicant-list"],
-    queryFn: getApplicantData,
+    queryKey: [
+      "applicant-list",
+      debouncedSearchText,
+      sortOption,
+      sortOrientation,
+    ],
+    queryFn: () =>
+      getApplicantData(
+        debouncedSearchText
+          ? {
+              searchText: debouncedSearchText,
+              searchOption,
+              sortOption,
+              sortOrientation,
+            }
+          : {
+              sortOption,
+              sortOrientation,
+            }
+      ),
+    placeholderData: (previousData) => previousData,
   });
 
+  useEffect(() => {
+    const handler = debounce(() => setDebouncedSearchText(searchInput), 500);
+    handler();
+    return () => handler.cancel();
+  }, [searchInput]);
+
   const mutateChangeStep = useMutation({
-    mutationFn: changeStep,
+    mutationFn: changeData,
     mutationKey: ["changeStep"],
     onSuccess: () => {
       setActiveItem(null);
@@ -29,12 +74,13 @@ export default function useDashboard() {
     },
   });
 
-  const [activeItem, setActiveItem] = useState<number | null>(null);
-
-  const handleDragStart = useCallback((event: DragStartEvent) => {
-    const { active } = event;
-    setActiveItem(Number(active.id));
-  }, []);
+  const handleDragStart = useCallback(
+    (event: DragStartEvent) => {
+      const { active } = event;
+      setActiveItem(Number(active.id));
+    },
+    [setActiveItem]
+  );
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -66,5 +112,44 @@ export default function useDashboard() {
     [setActiveItem, data, mutateChangeStep]
   );
 
-  return { data, activeItem, handleDragStart, handleDragEnd };
+  const handleChangeSearchInput = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setSearchInput(e.currentTarget.value);
+    },
+    [setSearchInput]
+  );
+
+  const handleChangeSearchOption = useCallback(
+    (e: SelectChangeEvent) => {
+      setSearchOption(e.target.value);
+    },
+    [setSearchOption]
+  );
+
+  const handleChangeSortOption = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setSortOption(e.currentTarget.value);
+      console.log("handler", e.currentTarget.value);
+    },
+    [setSortOption]
+  );
+
+  const handleChangeSortOrientation = useCallback(() => {
+    toggleSortOrientation();
+  }, [toggleSortOrientation]);
+
+  return {
+    data,
+    activeItem,
+    searchInput,
+    searchOption,
+    sortOption,
+    sortOrientation,
+    handleChangeSearchInput,
+    handleChangeSearchOption,
+    handleChangeSortOption,
+    handleChangeSortOrientation,
+    handleDragStart,
+    handleDragEnd,
+  };
 }

@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, MouseEvent, useCallback, useMemo, useState } from "react";
 import {
   Card,
   CardContent,
@@ -11,8 +11,14 @@ import {
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useDraggable } from "@dnd-kit/core";
-import { ApplicantCardType } from "./types/ApplicantCardType";
+import {
+  ApplicantCardType,
+  ApplicantDataType,
+} from "./types/ApplicantCardType";
 import CardHeaderMenu from "./CardHeaderMenu";
+import dayjs from "../../lib/dayjsSetup";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { changeData } from "../../apis/api";
 
 const CardContentNoPadding = styled(CardContent)(`
   padding: 0;
@@ -22,10 +28,20 @@ const CardContentNoPadding = styled(CardContent)(`
 `);
 
 function ApplicantCard({
-  itemData: { id, name, way, date, isEvaluation },
+  itemData: { id, name, way, date, isEvaluation, step },
 }: ApplicantCardType) {
+  const queryClient = useQueryClient();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const mutateChangeEvaluation = useMutation({
+    mutationKey: ["changeEvaluation"],
+    mutationFn: changeData,
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ["applicant-list"] });
+      setAnchorEl(null);
+    },
+  });
 
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
@@ -82,6 +98,42 @@ function ApplicantCard({
   const statusText = isEvaluation ? "평가완료" : "평가중";
   const statusColor = isEvaluation ? "success" : "warning";
 
+  const handleMutate = useCallback(
+    (overrides: Partial<ApplicantDataType>) => {
+      mutateChangeEvaluation.mutate({
+        id,
+        name,
+        way,
+        date,
+        step,
+        isEvaluation,
+        ...overrides,
+      });
+    },
+    [id, name, way, date, step, isEvaluation, mutateChangeEvaluation]
+  );
+
+  const handleChangeEvaluation = useCallback(
+    (event: MouseEvent<HTMLLIElement>) => {
+      event.stopPropagation();
+      handleMutate({
+        isEvaluation: true,
+      });
+    },
+    [handleMutate]
+  );
+
+  const handlePassed = useCallback(
+    (event: MouseEvent<HTMLElement>) => {
+      event.stopPropagation();
+      handleMutate({
+        step: "passed",
+        isEvaluation: true,
+      });
+    },
+    [handleMutate]
+  );
+
   return (
     <Card
       sx={{ marginY: 1, cursor: "grab", minHeight: 124, ...style }}
@@ -101,6 +153,10 @@ function ApplicantCard({
               anchorEl={anchorEl}
               setAnchorEl={setAnchorEl}
               open={open}
+              disabledEvaluation={isEvaluation}
+              disabledPassed={step === "passed"}
+              handleChangeEvaluation={handleChangeEvaluation}
+              handlePassed={handlePassed}
             />
           }
           sx={{ paddingX: 1.5, paddingY: 1 }}
@@ -120,8 +176,9 @@ function ApplicantCard({
               fontSize={"10px"}
               lineHeight={"10px"}
               color="textDisabled"
+              title={date}
             >
-              {date}
+              {dayjs(date).fromNow()}
             </Typography>
           </Stack>
           <Divider sx={{ my: 1 }} />

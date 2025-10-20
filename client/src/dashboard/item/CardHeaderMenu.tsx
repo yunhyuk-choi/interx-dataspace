@@ -3,6 +3,7 @@ import {
   Divider,
   IconButton,
   ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
 } from "@mui/material";
@@ -10,6 +11,7 @@ import {
   Dispatch,
   memo,
   MouseEvent,
+  MouseEventHandler,
   ReactNode,
   SetStateAction,
   useCallback,
@@ -31,6 +33,10 @@ interface CardHeaderMenuProps {
   anchorEl: null | HTMLElement;
   setAnchorEl: Dispatch<SetStateAction<HTMLElement | null>>;
   open: boolean;
+  disabledEvaluation: boolean;
+  disabledPassed: boolean;
+  handleChangeEvaluation: MouseEventHandler;
+  handlePassed: MouseEventHandler;
 }
 
 type DividerItem = { type: "divider" };
@@ -41,6 +47,7 @@ type MenuActionItem = {
   label: string;
   onClick?: (event: MouseEvent<HTMLLIElement>) => void;
   sx?: object;
+  disabled?: boolean;
 };
 
 type MenuItemType = DividerItem | MenuActionItem;
@@ -53,6 +60,10 @@ function CardHeaderMenu({
   anchorEl,
   setAnchorEl,
   open,
+  disabledEvaluation,
+  disabledPassed,
+  handleChangeEvaluation,
+  handlePassed,
 }: CardHeaderMenuProps) {
   const queryClient = useQueryClient();
 
@@ -97,18 +108,34 @@ function CardHeaderMenu({
       { icon: <PictureAsPdfIcon />, label: "지원자 정보 다운로드" },
       { icon: <EmailIcon />, label: "메일 쓰기" },
       { icon: <PhoneAndroidIcon />, label: "문자 보내기" },
-      { icon: <HowToRegIcon />, label: "평가 배정" },
+      {
+        icon: <HowToRegIcon />,
+        label: "평가 배정",
+        disabled: disabledEvaluation,
+        onClick: handleChangeEvaluation,
+      },
       { type: "divider" },
-      { icon: <SportsScoreIcon />, label: "최종 합격" },
+      {
+        icon: <SportsScoreIcon />,
+        label: "최종 합격",
+        disabled: disabledPassed,
+        onClick: handlePassed,
+      },
       { type: "divider" },
       {
         icon: <DoDisturbAltIcon />,
         label: "불합격 처리",
         onClick: handleDelete,
-        sx: { color: "red" },
+        sx: { color: "red", disable: true },
       },
     ],
-    [handleDelete]
+    [
+      handleDelete,
+      disabledEvaluation,
+      disabledPassed,
+      handleChangeEvaluation,
+      handlePassed,
+    ]
   );
 
   return (
@@ -135,9 +162,10 @@ function CardHeaderMenu({
               key={item.label}
               onClick={item.onClick ?? handleClose}
               sx={item.sx}
+              disabled={item.disabled}
             >
               <ListItemIcon sx={item.sx}>{item.icon}</ListItemIcon>
-              <ListItemIcon sx={item.sx}>{item.label}</ListItemIcon>
+              <ListItemText sx={item.sx}>{item.label}</ListItemText>
             </MenuItem>
           )
         )}
@@ -146,10 +174,4 @@ function CardHeaderMenu({
   );
 }
 
-export default memo(
-  CardHeaderMenu,
-  (prevProps, nextProps) =>
-    prevProps.open === nextProps.open &&
-    prevProps.anchorEl === nextProps.anchorEl &&
-    prevProps.id === nextProps.id
-);
+export default memo(CardHeaderMenu);
