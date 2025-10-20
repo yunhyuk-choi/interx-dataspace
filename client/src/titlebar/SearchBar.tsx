@@ -22,6 +22,7 @@ function SearchBar() {
   const {
     searchInput,
     searchOption,
+    sortOrientation,
     handleChangeSearchInput,
     handleChangeSearchOption,
     handleChangeSortOrientation,
@@ -89,7 +90,11 @@ function SearchBar() {
       >
         <AddApplicantDialog />
         <SortApplicantDialog />
-        <IconButton onClick={handleChangeSortOrientation} color="primary">
+        <IconButton
+          onClick={handleChangeSortOrientation}
+          color="primary"
+          title={sortOrientation === "asc" ? "오름차순" : "내림차순"}
+        >
           <SwapVertSharpIcon />
         </IconButton>
       </Stack>

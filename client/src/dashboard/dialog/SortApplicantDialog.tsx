@@ -14,14 +14,30 @@ import {
 import FilterListIcon from "@mui/icons-material/FilterList";
 import useDashboard from "../hook/useDashboard";
 import useAddDialog from "../hook/useAddDialog";
+import { useMemo } from "react";
 
 export default function SortApplicantDialog() {
   const { sortOption, handleChangeSortOption } = useDashboard();
   const { open, handleClickOpen, handleClose } = useAddDialog();
 
+  const sortOptionTitle = useMemo(() => {
+    switch (sortOption) {
+      case "date":
+        return "정렬: 지원일자순";
+      case "name":
+        return "정렬: 이름순";
+      case "id":
+        return "정렬: 등록순";
+    }
+  }, [sortOption]);
+
   return (
     <>
-      <IconButton onClick={handleClickOpen} color="primary" title="지원자 추가">
+      <IconButton
+        onClick={handleClickOpen}
+        color="primary"
+        title={sortOptionTitle}
+      >
         <FilterListIcon />
       </IconButton>
       <Dialog open={open} onClose={handleClose}>
@@ -37,9 +53,13 @@ export default function SortApplicantDialog() {
               <FormControlLabel
                 value="date"
                 control={<Radio />}
-                label="지원일자"
+                label="지원일자순"
               />
-              <FormControlLabel value="name" control={<Radio />} label="이름" />
+              <FormControlLabel
+                value="name"
+                control={<Radio />}
+                label="이름순"
+              />
               <FormControlLabel value="id" control={<Radio />} label="등록순" />
             </RadioGroup>
           </FormControl>
