@@ -174,5 +174,29 @@
     "step": "coding-test",
     "date": "2025.10.18",
     "isEvaluation": false
+  },
+  {
+    "name": "홍길동",
+    "date": "2025.10.20",
+    "way": "recommendation",
+    "step": "support",
+    "isEvaluation": false,
+    "id": 23
+  },
+  {
+    "name": "이철수",
+    "date": "2025.10.20",
+    "way": "recommendation",
+    "step": "support",
+    "isEvaluation": false,
+    "id": 24
+  },
+  {
+    "name": "김영희",
+    "date": "2025.10.01",
+    "way": "recommendation",
+    "step": "support",
+    "isEvaluation": false,
+    "id": 25
   }
 ]

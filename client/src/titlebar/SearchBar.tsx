@@ -7,9 +7,9 @@ import {
   Stack,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SwapVertSharpIcon from "@mui/icons-material/SwapVertSharp";
+import AddApplicantDialog from "../dashboard/dialog/AddApplicantDialog";
 
 export default function SearchBar() {
   return (
@@ -27,7 +27,7 @@ export default function SearchBar() {
         sx={{ marginY: 1, alignItems: "center" }}
         spacing={1}
       >
-        <AddIcon />
+        <AddApplicantDialog />
         <FilterListIcon />
         <SwapVertSharpIcon />
       </Stack>

@@ -39,7 +39,7 @@ export const getApplicantData =
 /**
  * 새로운 지원자 데이터를 추가합니다.
  *
- * @param {ApplicantDataType} item - 추가할 지원자 정보 객체
+ * @param {Omit<ApplicantDataType, "id">} item - 추가할 지원자 정보 객체 (id는 자동 추가되므로 제외)
  * @returns {Promise<ApplicantDataType[]>}
  * 추가 후 최신 지원자 데이터 배열을 반환합니다.
  *
@@ -49,7 +49,7 @@ export const getApplicantData =
  * ```
  */
 export const addData = async (
-  item: ApplicantDataType
+  item: Omit<ApplicantDataType, "id">
 ): Promise<ApplicantDataType[]> => {
   const { data } = await apiClient.post("/data", item);
   return data.data;
