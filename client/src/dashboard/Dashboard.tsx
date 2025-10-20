@@ -29,8 +29,7 @@ export default function Dashboard() {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 80,
-        tolerance: 20,
+        distance: 5,
       },
     })
   );

@@ -1,9 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  ApplicantListResponseType,
-  changeStep,
-  getApplicantData,
-} from "../../apis/api";
+import { changeStep, getApplicantData } from "../../apis/api";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { DataType } from "../table/types/DashboardTableType";
@@ -26,8 +22,12 @@ export default function useDashboard() {
     searchInput,
     searchOption,
     activeItem,
+    sortOption,
+    sortOrientation,
     setSearchInput,
     setSearchOption,
+    setSortOption,
+    toggleSortOrientation,
     setActiveItem,
   } = useDashboardStore();
 
@@ -35,29 +35,35 @@ export default function useDashboard() {
     string | undefined
   >(searchInput);
 
-  const { data: responseData, refetch } = useQuery({
-    queryKey: ["applicant-list", debouncedSearchText],
+  const { data, refetch } = useQuery({
+    queryKey: [
+      "applicant-list",
+      debouncedSearchText,
+      sortOption,
+      sortOrientation,
+    ],
     queryFn: () =>
       getApplicantData(
         debouncedSearchText
-          ? { searchText: debouncedSearchText, searchOption: searchOption }
-          : undefined
+          ? {
+              searchText: debouncedSearchText,
+              searchOption,
+              sortOption,
+              sortOrientation,
+            }
+          : {
+              sortOption,
+              sortOrientation,
+            }
       ),
+    placeholderData: (previousData) => previousData,
   });
-
-  const [data, setData] = useState<ApplicantListResponseType | undefined>(
-    responseData
-  );
 
   useEffect(() => {
     const handler = debounce(() => setDebouncedSearchText(searchInput), 500);
     handler();
     return () => handler.cancel();
   }, [searchInput]);
-
-  useEffect(() => {
-    setData(responseData);
-  }, [responseData]);
 
   const mutateChangeStep = useMutation({
     mutationFn: changeStep,
@@ -68,10 +74,13 @@ export default function useDashboard() {
     },
   });
 
-  const handleDragStart = useCallback((event: DragStartEvent) => {
-    const { active } = event;
-    setActiveItem(Number(active.id));
-  }, []);
+  const handleDragStart = useCallback(
+    (event: DragStartEvent) => {
+      const { active } = event;
+      setActiveItem(Number(active.id));
+    },
+    [setActiveItem]
+  );
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -117,13 +126,29 @@ export default function useDashboard() {
     [setSearchOption]
   );
 
+  const handleChangeSortOption = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setSortOption(e.currentTarget.value);
+      console.log("handler", e.currentTarget.value);
+    },
+    [setSortOption]
+  );
+
+  const handleChangeSortOrientation = useCallback(() => {
+    toggleSortOrientation();
+  }, [toggleSortOrientation]);
+
   return {
     data,
     activeItem,
     searchInput,
     searchOption,
+    sortOption,
+    sortOrientation,
     handleChangeSearchInput,
     handleChangeSearchOption,
+    handleChangeSortOption,
+    handleChangeSortOrientation,
     handleDragStart,
     handleDragEnd,
   };

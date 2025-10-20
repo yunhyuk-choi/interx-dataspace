@@ -13,7 +13,25 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useDraggable } from "@dnd-kit/core";
 import { ApplicantCardType } from "./types/ApplicantCardType";
 import CardHeaderMenu from "./CardHeaderMenu";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import updateLocale from "dayjs/plugin/updateLocale";
 
+dayjs.extend(relativeTime);
+dayjs.extend(updateLocale);
+
+dayjs.updateLocale("en", {
+  relativeTime: {
+    future: "%s 후",
+    past: "%s 전",
+    d: "하루",
+    dd: "%d일",
+    M: "한달",
+    MM: "%d달",
+    y: "1년",
+    yy: "%d년",
+  },
+});
 const CardContentNoPadding = styled(CardContent)(`
   padding: 0;
   &:last-child {
@@ -120,8 +138,9 @@ function ApplicantCard({
               fontSize={"10px"}
               lineHeight={"10px"}
               color="textDisabled"
+              title={date}
             >
-              {date}
+              {dayjs(date).fromNow()}
             </Typography>
           </Stack>
           <Divider sx={{ my: 1 }} />

@@ -1,6 +1,7 @@
 import {
   FormControl,
   FormControlLabel,
+  IconButton,
   InputLabel,
   MenuItem,
   OutlinedInput,
@@ -10,10 +11,10 @@ import {
   Stack,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import SwapVertSharpIcon from "@mui/icons-material/SwapVertSharp";
 import AddApplicantDialog from "../dashboard/dialog/AddApplicantDialog";
 import useDashboard from "../dashboard/hook/useDashboard";
+import SortApplicantDialog from "../dashboard/dialog/SortApplicantDialog";
 
 export default function SearchBar() {
   const {
@@ -21,6 +22,7 @@ export default function SearchBar() {
     searchOption,
     handleChangeSearchInput,
     handleChangeSearchOption,
+    handleChangeSortOrientation,
   } = useDashboard();
   return (
     <Stack direction={"row"} spacing={2} sx={{ marginY: 1 }}>
@@ -75,8 +77,10 @@ export default function SearchBar() {
         spacing={1}
       >
         <AddApplicantDialog />
-        <FilterListIcon />
-        <SwapVertSharpIcon />
+        <SortApplicantDialog />
+        <IconButton onClick={handleChangeSortOrientation} color="primary">
+          <SwapVertSharpIcon />
+        </IconButton>
       </Stack>
     </Stack>
   );

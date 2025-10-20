@@ -18,16 +18,25 @@ export type ApplicantListResponseType = {
   [key in DataType]: ApplicantDataType[];
 };
 
+/**
+ * 검색 및 정렬 조건
+ *
+ * @param {string} searchText = 검색할 문자열
+ * @param {string} searchOption = 검색 조건(검색할 field)
+ * @param {string} sortOption = 정렬 조건(정렬 기준 field)
+ * @param {string} sortOrientation = 정렬 방향(asc,desc)
+ */
 type SearchParams = {
   searchText: string;
   searchOption: string;
+  sortOption: string;
+  sortOrientation: string;
 };
 
 /**
  * 모든 지원자 데이터를 서버로부터 가져옵니다.
  *
- * @param {string} searchText = 검색할 문자열
- * @param {string} searchOption = 검색 조건(검색할 field)
+ * @param {SearchParams} searchParams = 검색 및 정렬 조건
  * @returns {Promise<ApplicantListResponseType>}
  * 각 채용 단계별(`DataType`)로 분류된 지원자 리스트를 반환합니다.
  *
@@ -38,11 +47,10 @@ type SearchParams = {
  * ```
  */
 export const getApplicantData = async (
-  searchParams?: SearchParams
+  searchParams?: Partial<SearchParams>
 ): Promise<ApplicantListResponseType> => {
-  const urlSearchParams = new URLSearchParams(searchParams);
   const { data } = await apiClient.get<ApplicantListResponseType>("/data", {
-    params: urlSearchParams,
+    params: searchParams,
   });
   return data;
 };

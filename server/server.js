@@ -32,7 +32,12 @@ const writeData = (data) => {
 app.get("/api/data", (req, res) => {
   const data = readData();
 
-  const { searchText, searchOption } = req.query;
+  const {
+    searchText,
+    searchOption,
+    sortOption = "id",
+    sortOrientation = "asc",
+  } = req.query;
 
   const searchedData =
     searchText && searchOption
@@ -44,7 +49,22 @@ app.get("/api/data", (req, res) => {
         : data
       : data;
 
-  res.json(Object.groupBy(searchedData, ({ step }) => step));
+  res.json(
+    Object.groupBy(
+      searchedData.sort((a, b) => {
+        if (sortOption === "id") {
+          return sortOrientation === "desc"
+            ? b[sortOption] - a[sortOption]
+            : a[sortOption] - b[sortOption];
+        } else {
+          return sortOrientation === "desc"
+            ? b[sortOption].localeCompare(a[sortOption])
+            : a[sortOption].localeCompare(b[sortOption]);
+        }
+      }),
+      ({ step }) => step
+    )
+  );
 });
 
 app.post("/api/data", (req, res) => {
