@@ -86,7 +86,7 @@ export const addData = async (
  * await changeStep({ ...applicant, step: "second-interview" });
  * ```
  */
-export const changeStep = async (
+export const changeData = async (
   item: ApplicantDataType
 ): Promise<ApplicantDataType[]> => {
   const { data } = await apiClient.put("/data", item);

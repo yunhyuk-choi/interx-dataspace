@@ -2,6 +2,7 @@ import {
   FormControl,
   FormControlLabel,
   IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
   OutlinedInput,
@@ -15,8 +16,9 @@ import SwapVertSharpIcon from "@mui/icons-material/SwapVertSharp";
 import AddApplicantDialog from "../dashboard/dialog/AddApplicantDialog";
 import useDashboard from "../dashboard/hook/useDashboard";
 import SortApplicantDialog from "../dashboard/dialog/SortApplicantDialog";
+import { memo, useMemo } from "react";
 
-export default function SearchBar() {
+function SearchBar() {
   const {
     searchInput,
     searchOption,
@@ -24,6 +26,46 @@ export default function SearchBar() {
     handleChangeSearchOption,
     handleChangeSortOrientation,
   } = useDashboard();
+
+  const SearchInput = useMemo(
+    () =>
+      searchOption === "name" ? (
+        <OutlinedInput
+          size="small"
+          placeholder="이름을 입력하세요"
+          value={searchInput}
+          onChange={handleChangeSearchInput}
+          startAdornment={
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          }
+          sx={{ width: 200 }}
+        />
+      ) : (
+        <FormControl>
+          <RadioGroup
+            row
+            defaultValue={"all"}
+            onChange={handleChangeSearchInput}
+          >
+            <FormControlLabel value="all" control={<Radio />} label="전체" />
+            <FormControlLabel
+              value="self"
+              control={<Radio />}
+              label="직접 등록"
+            />
+            <FormControlLabel
+              value="recommendation"
+              control={<Radio />}
+              label="추천 등록"
+            />
+          </RadioGroup>
+        </FormControl>
+      ),
+    [searchOption, searchInput, handleChangeSearchInput]
+  );
+
   return (
     <Stack direction={"row"} spacing={2} sx={{ marginY: 1 }}>
       <FormControl size="small" sx={{ minWidth: 120 }}>
@@ -39,38 +81,7 @@ export default function SearchBar() {
           <MenuItem value={"way"}>등록 유형</MenuItem>
         </Select>
       </FormControl>
-      {searchOption === "name" ? (
-        <OutlinedInput
-          startAdornment={<SearchIcon />}
-          size="small"
-          value={searchInput}
-          onChange={handleChangeSearchInput}
-        />
-      ) : (
-        <FormControl>
-          <RadioGroup
-            row
-            defaultValue={"all"}
-            onChange={handleChangeSearchInput}
-          >
-            <FormControlLabel
-              value={"all"}
-              control={<Radio />}
-              label={"전체"}
-            />
-            <FormControlLabel
-              value={"self"}
-              control={<Radio />}
-              label={"직접 등록"}
-            />
-            <FormControlLabel
-              value={"recommendation"}
-              control={<Radio />}
-              label={"추천 등록"}
-            />
-          </RadioGroup>
-        </FormControl>
-      )}
+      {SearchInput}
       <Stack
         direction={"row"}
         sx={{ marginY: 1, alignItems: "center" }}
@@ -85,3 +96,5 @@ export default function SearchBar() {
     </Stack>
   );
 }
+
+export default memo(SearchBar);

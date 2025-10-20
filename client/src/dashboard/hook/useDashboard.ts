@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { changeStep, getApplicantData } from "../../apis/api";
+import { changeData, getApplicantData } from "../../apis/api";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { DataType } from "../table/types/DashboardTableType";
@@ -66,7 +66,7 @@ export default function useDashboard() {
   }, [searchInput]);
 
   const mutateChangeStep = useMutation({
-    mutationFn: changeStep,
+    mutationFn: changeData,
     mutationKey: ["changeStep"],
     onSuccess: () => {
       setActiveItem(null);
