@@ -1,5 +1,5 @@
 import express from "express";
-import fs, { read } from "fs";
+import fs from "fs";
 import path from "path";
 import cors from "cors";
 
@@ -32,7 +32,19 @@ const writeData = (data) => {
 app.get("/api/data", (req, res) => {
   const data = readData();
 
-  res.json(Object.groupBy(data, ({ step }) => step));
+  const { searchText, searchOption } = req.query;
+
+  const searchedData =
+    searchText && searchOption
+      ? !(searchOption === "way" && searchText === "all")
+        ? data.filter((item) => {
+            const value = String(item[searchOption] ?? "").toLowerCase();
+            return value.includes(String(searchText).toLowerCase());
+          })
+        : data
+      : data;
+
+  res.json(Object.groupBy(searchedData, ({ step }) => step));
 });
 
 app.post("/api/data", (req, res) => {

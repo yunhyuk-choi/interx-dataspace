@@ -14,13 +14,20 @@ import { apiClient } from "./apiClient";
  * }
  * ```
  */
-type ApplicantListResponseType = {
+export type ApplicantListResponseType = {
   [key in DataType]: ApplicantDataType[];
+};
+
+type SearchParams = {
+  searchText: string;
+  searchOption: string;
 };
 
 /**
  * 모든 지원자 데이터를 서버로부터 가져옵니다.
  *
+ * @param {string} searchText = 검색할 문자열
+ * @param {string} searchOption = 검색 조건(검색할 field)
  * @returns {Promise<ApplicantListResponseType>}
  * 각 채용 단계별(`DataType`)로 분류된 지원자 리스트를 반환합니다.
  *
@@ -30,11 +37,15 @@ type ApplicantListResponseType = {
  * console.log(data["coding-test"]); // 코딩 테스트 단계 지원자 목록
  * ```
  */
-export const getApplicantData =
-  async (): Promise<ApplicantListResponseType> => {
-    const { data } = await apiClient.get<ApplicantListResponseType>("/data");
-    return data;
-  };
+export const getApplicantData = async (
+  searchParams?: SearchParams
+): Promise<ApplicantListResponseType> => {
+  const urlSearchParams = new URLSearchParams(searchParams);
+  const { data } = await apiClient.get<ApplicantListResponseType>("/data", {
+    params: urlSearchParams,
+  });
+  return data;
+};
 
 /**
  * 새로운 지원자 데이터를 추가합니다.
